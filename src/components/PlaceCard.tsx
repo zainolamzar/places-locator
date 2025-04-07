@@ -8,14 +8,19 @@ interface PlaceCardProps {
 }
 
 const PlaceCard: React.FC<PlaceCardProps> = ({ place, onClose }) => {
+  const handleClose = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onClose();
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-xl p-4 md:p-6 max-w-4xl mx-auto relative">
       <button
-        onClick={onClose}
-        className="absolute right-2 top-2 p-1.5 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+        onClick={handleClose}
+        className="absolute right-2 top-2 p-2 rounded-full bg-white/90 hover:bg-white shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 z-10"
         aria-label="Close details"
       >
-        <X className="w-4 h-4 text-gray-600" />
+        <X className="w-5 h-5 text-gray-600" />
       </button>
 
       <div className="space-y-4 mt-2">

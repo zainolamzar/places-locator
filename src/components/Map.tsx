@@ -9,26 +9,28 @@ interface MapProps {
 
 const Map: React.FC<MapProps> = ({ places, onPlaceSelect }) => {
   const mapRef = useRef<HTMLDivElement>(null);
-  const markersRef = useRef<google.maps.Marker[]>([]);
+  const markersRef = useRef<google.maps.marker.AdvancedMarkerElement[]>([]);
 
   useEffect(() => {
     const loader = new Loader({
       apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
       version: 'weekly',
+      libraries: ['marker', 'places'],
     });
 
     loader.load().then(() => {
       if (!mapRef.current) return;
 
       const map = new google.maps.Map(mapRef.current, {
-        center: { lat: 3.1390, lng: 101.6869 }, // Kuala Lumpur coordinates
+        center: { lat: 3.1390, lng: 101.6869 },
         zoom: 12,
+        mapId: 'YOUR_MAP_ID', // You need to create a Map ID in Google Cloud Console
         mapTypeId: google.maps.MapTypeId.HYBRID,
-        gestureHandling: 'greedy', // This enables touch gestures
+        gestureHandling: 'greedy',
         mapTypeControl: true,
         mapTypeControlOptions: {
           position: google.maps.ControlPosition.TOP_RIGHT,
-          style: google.maps.MapTypeControlStyle.DROPDOWN_MENU, // More mobile-friendly
+          style: google.maps.MapTypeControlStyle.DROPDOWN_MENU,
         },
         zoomControl: true,
         zoomControlOptions: {
@@ -38,37 +40,62 @@ const Map: React.FC<MapProps> = ({ places, onPlaceSelect }) => {
         fullscreenControlOptions: {
           position: google.maps.ControlPosition.RIGHT_TOP
         },
-        streetViewControl: false, // Disable street view on mobile
-        styles: [
-          {
-            featureType: 'all',
-            elementType: 'geometry',
-            stylers: [{ color: '#242f3e' }]
-          },
-          {
-            featureType: 'water',
-            elementType: 'geometry',
-            stylers: [{ color: '#17263c' }]
-          }
-        ]
+        streetViewControl: false,
       });
 
       // Clear existing markers
-      markersRef.current.forEach(marker => marker.setMap(null));
+      markersRef.current.forEach(marker => marker.map = null);
       markersRef.current = [];
 
       // Add markers for each place
       places.forEach(place => {
-        const marker = new google.maps.Marker({
+        // Create a div element for the marker
+        const markerDiv = document.createElement('div');
+        markerDiv.className = 'marker';
+        markerDiv.style.width = '24px';
+        markerDiv.style.height = '24px';
+        markerDiv.style.backgroundColor = '#EA4335'; // Changed to Google Red
+        markerDiv.style.border = '2px solid white';
+        markerDiv.style.borderRadius = '50%';
+        markerDiv.style.display = 'flex';
+        markerDiv.style.alignItems = 'center';
+        markerDiv.style.justifyContent = 'center';
+        markerDiv.style.color = 'white';
+        markerDiv.style.fontWeight = 'bold';
+        markerDiv.style.fontSize = '12px';
+        markerDiv.textContent = place.name.charAt(0).toUpperCase();
+
+        // Add hover effect
+        markerDiv.addEventListener('mouseenter', () => {
+          markerDiv.style.transform = 'scale(1.4)';
+          markerDiv.style.backgroundColor = '#D33426'; // Darker red on hover
+        });
+
+        markerDiv.addEventListener('mouseleave', () => {
+          markerDiv.style.transform = 'scale(1)';
+          markerDiv.style.backgroundColor = '#EA4335'; // Back to original red
+        });
+
+        const marker = new google.maps.marker.AdvancedMarkerElement({
           position: place.location,
           map,
           title: place.name,
-          animation: google.maps.Animation.DROP,
-          optimized: true, // Optimize for mobile performance
+          content: markerDiv,
         });
 
-        marker.addListener('click', () => {
+        // Add click event to the marker div itself
+        markerDiv.addEventListener('click', (e) => {
+          e.stopPropagation();
           onPlaceSelect(place);
+          map.panTo(place.location);
+          map.setZoom(15);
+        });
+
+        // Also add the gmp-click event as a fallback
+        marker.addEventListener('gmp-click', () => {
+          onPlaceSelect(place);
+          map.panTo(place.location);
+          map.setZoom(15);
         });
 
         markersRef.current.push(marker);

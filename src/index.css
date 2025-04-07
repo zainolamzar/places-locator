@@ -1,3 +1,37 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Overlay Card Animation */
+.overlay-card-enter {
+  transform: translateY(100%);
+  opacity: 0;
+}
+
+.overlay-card-enter-active {
+  transform: translateY(0);
+  opacity: 1;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.overlay-card-exit {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.overlay-card-exit-active {
+  transform: translateY(100%);
+  opacity: 0;
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+/* Marker Styles */
+.marker {
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.marker:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}

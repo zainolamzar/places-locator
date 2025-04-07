@@ -4,9 +4,18 @@ import Map from './components/Map';
 import PlaceCard from './components/PlaceCard';
 import { rentalPlaces } from './data';
 import { RentalPlace } from './types';
+import { CSSTransition } from 'react-transition-group';
 
 function App() {
   const [selectedPlace, setSelectedPlace] = useState<RentalPlace | null>(null);
+
+  const handlePlaceSelect = (place: RentalPlace) => {
+    setSelectedPlace(place);
+  };
+
+  const handleClose = () => {
+    setSelectedPlace(null);
+  };
 
   return (
     <div className="h-[100dvh] w-full relative overflow-hidden">
@@ -29,21 +38,28 @@ function App() {
       <div className="w-full h-full touch-none">
         <Map 
           places={rentalPlaces} 
-          onPlaceSelect={setSelectedPlace} 
+          onPlaceSelect={handlePlaceSelect} 
         />
       </div>
 
       {/* Overlay Card */}
-      {selectedPlace && (
-        <div className="absolute bottom-0 left-0 right-0 z-20 p-4 transition-transform duration-300 touch-none">
-          <div className="rounded-lg shadow-xl overflow-hidden">
-            <PlaceCard 
-              place={selectedPlace} 
-              onClose={() => setSelectedPlace(null)}
-            />
-          </div>
+      <CSSTransition
+        in={!!selectedPlace}
+        timeout={300}
+        classNames="overlay-card"
+        unmountOnExit
+      >
+        <div className="absolute bottom-0 left-0 right-0 z-20 p-4 touch-none">
+          {selectedPlace && (
+            <div className="rounded-lg shadow-xl overflow-hidden transform transition-all duration-300">
+              <PlaceCard 
+                place={selectedPlace}
+                onClose={handleClose}
+              />
+            </div>
+          )}
         </div>
-      )}
+      </CSSTransition>
     </div>
   );
 }
