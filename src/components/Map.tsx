@@ -23,21 +23,22 @@ const Map: React.FC<MapProps> = ({ places, onPlaceSelect }) => {
       const map = new google.maps.Map(mapRef.current, {
         center: { lat: 3.1390, lng: 101.6869 }, // Kuala Lumpur coordinates
         zoom: 12,
-        mapTypeId: google.maps.MapTypeId.HYBRID, // This shows satellite with labels
+        mapTypeId: google.maps.MapTypeId.HYBRID,
+        gestureHandling: 'greedy', // This enables touch gestures
         mapTypeControl: true,
         mapTypeControlOptions: {
           position: google.maps.ControlPosition.TOP_RIGHT,
-          style: google.maps.MapTypeControlStyle.HORIZONTAL_BAR,
-          mapTypeIds: [
-            google.maps.MapTypeId.ROADMAP,
-            google.maps.MapTypeId.SATELLITE,
-            google.maps.MapTypeId.HYBRID
-          ]
+          style: google.maps.MapTypeControlStyle.DROPDOWN_MENU, // More mobile-friendly
+        },
+        zoomControl: true,
+        zoomControlOptions: {
+          position: google.maps.ControlPosition.RIGHT_CENTER,
         },
         fullscreenControl: true,
         fullscreenControlOptions: {
           position: google.maps.ControlPosition.RIGHT_TOP
         },
+        streetViewControl: false, // Disable street view on mobile
         styles: [
           {
             featureType: 'all',
@@ -63,6 +64,7 @@ const Map: React.FC<MapProps> = ({ places, onPlaceSelect }) => {
           map,
           title: place.name,
           animation: google.maps.Animation.DROP,
+          optimized: true, // Optimize for mobile performance
         });
 
         marker.addListener('click', () => {
@@ -71,10 +73,24 @@ const Map: React.FC<MapProps> = ({ places, onPlaceSelect }) => {
 
         markersRef.current.push(marker);
       });
+
+      // Add touch event listeners for better mobile interaction
+      map.addListener('touchend', () => {
+        // You can add custom touch interactions here
+      });
     });
   }, [places, onPlaceSelect]);
 
-  return <div ref={mapRef} className="w-full h-full" />;
+  return (
+    <div 
+      ref={mapRef} 
+      className="w-full h-[100dvh] touch-none" 
+      style={{ 
+        touchAction: 'none',
+        WebkitOverflowScrolling: 'touch',
+      }} 
+    />
+  );
 };
 
 export default Map;

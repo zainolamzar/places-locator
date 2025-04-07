@@ -9,7 +9,7 @@ function App() {
   const [selectedPlace, setSelectedPlace] = useState<RentalPlace | null>(null);
 
   return (
-    <div className="h-screen w-full relative">
+    <div className="h-[100dvh] w-full relative overflow-hidden">
       {/* Header Badge */}
       <div className="absolute top-2 sm:top-4 left-2 sm:left-4 z-10">
         <div className="bg-white/90 backdrop-blur-sm shadow-lg rounded-lg overflow-hidden">
@@ -26,7 +26,7 @@ function App() {
       </div>
 
       {/* Map */}
-      <div className="w-full h-full">
+      <div className="w-full h-full touch-none">
         <Map 
           places={rentalPlaces} 
           onPlaceSelect={setSelectedPlace} 
@@ -35,11 +35,13 @@ function App() {
 
       {/* Overlay Card */}
       {selectedPlace && (
-        <div className="absolute bottom-0 left-0 right-0 z-20 p-4 transition-transform duration-300">
-          <PlaceCard 
-            place={selectedPlace} 
-            onClose={() => setSelectedPlace(null)}
-          />
+        <div className="absolute bottom-0 left-0 right-0 z-20 p-4 transition-transform duration-300 touch-none">
+          <div className="rounded-lg shadow-xl overflow-hidden">
+            <PlaceCard 
+              place={selectedPlace} 
+              onClose={() => setSelectedPlace(null)}
+            />
+          </div>
         </div>
       )}
     </div>
