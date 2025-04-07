@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { MapPin, X } from 'lucide-react';
+import { useState } from 'react';
+import { MapPin } from 'lucide-react';
 import Map from './components/Map';
 import PlaceCard from './components/PlaceCard';
 import { rentalPlaces } from './data';

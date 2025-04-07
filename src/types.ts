@@ -1,9 +1,9 @@
-import { LatLngLiteral } from '@googlemaps/js-api-loader';
-
+// Remove the import and use google.maps.LatLngLiteral directly
 export interface RentalPlace {
+  id: string;
   name: string;
   address: string;
-  location: LatLngLiteral;
+  location: google.maps.LatLngLiteral;
   price: number;
   description: string;
   moreDetailsUrl: string;
@@ -22,22 +22,6 @@ declare global {
     
     class PinView {
       constructor(options: Partial<PinView>);
-    }
-    
-    class AdvancedMarkerElement {
-      position: LatLngLiteral;
-      map: google.maps.Map | null;
-      title: string;
-      content: HTMLElement;
-      
-      constructor(options: {
-        position: LatLngLiteral;
-        map: google.maps.Map;
-        title: string;
-        content: HTMLElement;
-      });
-      
-      addListener(event: string, callback: () => void): void;
     }
   }
 }

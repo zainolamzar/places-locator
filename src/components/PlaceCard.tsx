@@ -1,6 +1,6 @@
 import React from 'react';
 import { RentalPlace } from '../types';
-import { MapPin, DollarSign, ExternalLink, X } from 'lucide-react';
+import { MapPin, ExternalLink, X } from 'lucide-react';
 
 interface PlaceCardProps {
   place: RentalPlace;
@@ -9,6 +9,7 @@ interface PlaceCardProps {
 
 const PlaceCard: React.FC<PlaceCardProps> = ({ place, onClose }) => {
   const handleClose = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     onClose();
   };
@@ -16,6 +17,7 @@ const PlaceCard: React.FC<PlaceCardProps> = ({ place, onClose }) => {
   return (
     <div className="bg-white rounded-lg shadow-xl p-4 md:p-6 max-w-4xl mx-auto relative">
       <button
+        type="button"
         onClick={handleClose}
         className="absolute right-2 top-2 p-2 rounded-full bg-white/90 hover:bg-white shadow-md hover:shadow-lg transition-all duration-200 active:scale-95 z-10"
         aria-label="Close details"
